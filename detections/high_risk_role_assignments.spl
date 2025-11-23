@@ -1,0 +1,3 @@
+index=main sourcetype="sap:audit:log" event_type="CHANGE_ROLE"
+| search new_role=SAP_ALL OR new_role=FI_SUPER OR new_role=BASIS_ADMIN
+| table _time user target_user new_role source_ip severity message

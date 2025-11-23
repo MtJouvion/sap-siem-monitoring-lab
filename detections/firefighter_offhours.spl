@@ -1,0 +1,4 @@
+index=main sourcetype="sap:audit:log" event_type="FIREFIGHTER_LOGIN"
+| eval hour = tonumber(strftime(_time, "%H"))
+| where hour < 6 OR hour > 20
+| table _time user source_ip hour severity message

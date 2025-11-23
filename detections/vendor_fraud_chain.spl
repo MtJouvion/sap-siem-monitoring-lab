@@ -1,0 +1,13 @@
+index=sap_audit sourcetype="sap:audit:log" (event_type="CREATE_VENDOR" OR event_type="POST_DOCUMENT")
+| eval amount_num = tonumber(amount)
+| stats 
+    min(_time) AS first_seen
+    max(_time) AS last_seen
+    values(event_type) AS event_types
+    values(user) AS users_involved
+    values(amount) AS amounts
+    count AS event_count
+  BY vendor_id
+| eval time_diff = last_seen - first_seen
+| where mvcount(event_types) > 1 AND time_diff < 3600
+| table vendor_id first_seen last_seen time_diff users_involved amounts

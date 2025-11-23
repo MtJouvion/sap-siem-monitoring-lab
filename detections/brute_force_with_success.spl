@@ -1,0 +1,8 @@
+index=main sourcetype="sap:audit:log" (event_type="LOGIN_FAILED" OR event_type="LOGIN_SUCCESS")
+| stats 
+    count(eval(event_type="LOGIN_FAILED")) AS failed_count 
+    count(eval(event_type="LOGIN_SUCCESS")) AS success_count 
+    earliest(_time) AS first_seen 
+    latest(_time) AS last_seen 
+  BY user, source_ip
+| where failed_count > 10 AND success_count >= 1

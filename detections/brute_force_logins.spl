@@ -1,0 +1,4 @@
+index=main sourcetype="sap:audit:log" event_type="LOGIN_FAILED"
+| stats count AS failed_attempts BY user, source_ip
+| where failed_attempts > 10
+

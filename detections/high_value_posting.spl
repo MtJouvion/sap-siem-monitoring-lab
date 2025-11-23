@@ -1,0 +1,4 @@
+index=main sourcetype="sap:audit:log" event_type="POST_DOCUMENT"
+| eval amount_num = tonumber(amount)
+| where amount_num > 50000
+| table _time user vendor_id amount currency tcode source_ip severity message
