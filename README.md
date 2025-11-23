@@ -44,25 +44,29 @@ How to run the lab:
 run    python3 scripts/generate_sap_logs.py
 
 
-Detection cases:
+Detection cases query:
 
 for brute force:
+
 index=main sourcetype="sap:audit:log" event_type="LOGIN_FAILED"
 | stats count AS failed_attempts BY user, source_ip
 | where failed_attempts > 10
 
 for high-risk role assignment:
+
 index=main sourcetype="sap:audit:log" event_type="CHANGE_ROLE"
 | search new_role=SAP_ALL OR new_role=FI_SUPER OR new_role=BASIS_ADMIN
 | table _time user target_user new_role source_ip severity message
 
 for high-value financial posting:
+
 index=main sourcetype="sap:audit:log" event_type="POST_DOCUMENT"
 | eval amount_num = tonumber(amount)
 | where amount_num > 50000
 | table _time user vendor_id amount currency tcode source_ip severity message
 
 for vendor fraud chain:
+
 index=main sourcetype="sap:audit:log" (event_type="CREATE_VENDOR" OR event_type="POST_DOCUMENT")
 | eval amount_num = tonumber(amount)
 | stats 
@@ -78,6 +82,7 @@ index=main sourcetype="sap:audit:log" (event_type="CREATE_VENDOR" OR event_type=
 | table vendor_id first_seen last_seen time_diff users_involved amounts
 
 for off hour emergency:
+
 index=main sourcetype="sap:audit:log" event_type="FIREFIGHTER_LOGIN"
 | eval hour = tonumber(strftime(_time, "%H"))
 | where hour < 6 OR hour > 20
